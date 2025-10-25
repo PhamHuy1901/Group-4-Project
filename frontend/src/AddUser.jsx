@@ -7,8 +7,6 @@ export default function AddUser({ onAdded }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return alert("Name trống");
-    if (!/\S+@\S+\.\S+/.test(email)) return alert("Email sai");
     await api.post("/users", { name, email });
     setName(""); setEmail("");
     onAdded?.();
@@ -17,8 +15,8 @@ export default function AddUser({ onAdded }) {
   return (
     <form onSubmit={submit}>
       <h2>Add User</h2>
-      <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
-      <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+      <input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" />
+      <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" />
       <button type="submit">Add</button>
     </form>
   );
