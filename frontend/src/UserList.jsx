@@ -1,31 +1,34 @@
-<<<<<<< Updated upstream
 import { useEffect, useState } from "react";
-import { api } from "./api";
+import axios from "axios";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const fetchUsers = async () => {
-    const { data } = await api.get("/users");
-    setUsers(data);
+    const res = await axios.get("http://localhost:3001/users");
+    setUsers(res.data);
   };
-
   useEffect(() => { fetchUsers(); }, []);
 
+  const addUser = async (e) => {
+    e.preventDefault();
+    await axios.post("http://localhost:3001/users", { name, email });
+    setName(""); setEmail("");
+    fetchUsers();
+  };
+
   return (
-    <div>
-      <h2>User List</h2>
-      <ul>{users.map(u => <li key={u.id}>{u.name} ({u.email})</li>)}</ul>
-    </div>
+    <>
+      <form onSubmit={addUser}>
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" />
+        <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" />
+        <button>Add</button>
+      </form>
+      <ul>
+        {users.map(u => <li key={u.id}>{u.name} - {u.email}</li>)}
+      </ul>
+    </>
   );
-=======
-import {useEffect,useState} from 'react';
-import {api} from './api';
-export default function UserList(){
-  const [users,setUsers]=useState([]);
-  useEffect(()=>{ (async ()=>{
-    const {data}=await api.get('/users'); setUsers(data);
-  })(); },[]);
-  return <ul>{users.map(u=><li key={u.id||u._id}>{u.name} ({u.email})</li>)}</ul>;
->>>>>>> Stashed changes
 }
