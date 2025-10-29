@@ -2,41 +2,40 @@ import { useState } from "react";
 import { api } from "./api";
 
 export default function AddUser({ onAdded }) {
-  const [name, setName] = useState("");
+  const [name, setName]   = useState("");
   const [email, setEmail] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState({ type: "", text: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState("");
 
-  const submit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return setMsg({ type: "error", text: "Name trống" });
-    if (!/\S+@\S+\.\S+/.test(email)) return setMsg({ type: "error", text: "Email sai" });
+    const n = name.trim();
+    const m = email.trim().toLowerCase();
+
+    if (!n) { setErr("Name không được để trống"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)) { setErr("Email không hợp lệ"); return; }
+
     try {
-      setBusy(true);
-      await api.post("/users", { name, email });
+      setSubmitting(true);
+      setErr("");
+      await api.post("/users", { name: n, email: m }); // baseURL = http://localhost:3001
       setName(""); setEmail("");
-      setMsg({ type: "ok", text: "Đã thêm" });
       onAdded?.();
-    } catch {
-      setMsg({ type: "error", text: "Không thêm được" });
-    } finally { setBusy(false); }
+    } catch (e) {
+      const msg = e?.response?.data?.error || e.message;
+      setErr(`Không thêm được: ${msg}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <form className="form" onSubmit={submit} style={{ marginTop: 8 }}>
-      <div className="input">
-        <label>Name</label>
-        <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Nguyễn Văn A" />
-      </div>
-      <div className="input">
-        <label>Email</label>
-        <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="email@example.com" />
-      </div>
-      <button className="btn" disabled={busy}>{busy ? "Đang thêm..." : "Add"}</button>
-      <div style={{ gridColumn: "1 / -1" }}>
-        {msg.type==="error" && <div className="error">{msg.text}</div>}
-        {msg.type==="ok" && <div className="ok">{msg.text}</div>}
-      </div>
+    <form onSubmit={handleSubmit} style={{display:"grid", gap:8}}>
+      <h2>Add User</h2>
+      <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
+      <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+      {err && <small style={{color:"red"}}>{err}</small>}
+      <button type="submit" disabled={submitting}>{submitting ? "Adding..." : "Add"}</button>
     </form>
   );
 }

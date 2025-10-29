@@ -1,15 +1,14 @@
-import "./styles.css";
+import { useState } from "react";
 import UserList from "./UserList";
+import AddUser from "./AddUser";
 
 export default function App() {
+  const [refresh, setRefresh] = useState(0);
   return (
-    <div className="container">
-      <div className="card">
-        <div className="header">
-          <h1>User Manager</h1>
-        </div>
-        <UserList />
-      </div>
+    <div style={{ padding: 16 }}>
+      <AddUser onAdded={() => setRefresh(r => r + 1)} />
+      <hr />
+      <UserList key={refresh} />
     </div>
   );
 }
