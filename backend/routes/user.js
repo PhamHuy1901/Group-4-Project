@@ -6,8 +6,8 @@ const { authenticate, requireAdmin, requireAdminOrOwner, optionalAuth } = requir
 // GET /users - Chỉ Admin mới xem được danh sách tất cả users
 router.get('/', authenticate, requireAdmin, userController.getUsers);
 
-// POST /users - Tạo user mới (public, nhưng chỉ admin mới set được role)
-router.post('/', optionalAuth, userController.createUser);
+// POST /users - Tạo user mới (public - không cần xác thực để đăng ký)
+router.post('/', userController.createUser);
 
 // PUT /users/:id - Admin hoặc chính user đó mới update được
 router.put('/:id', authenticate, requireAdminOrOwner, userController.updateUser);

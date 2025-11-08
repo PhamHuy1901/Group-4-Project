@@ -29,7 +29,8 @@ exports.createUser = async (req, res) => {
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
     
-    // Chỉ admin mới có thể set role, user thường mặc định là 'user'
+    // Chỉ admin mới có thể set role (nếu có req.user và role là admin)
+    // User thường mặc định là 'user'
     let userRole = 'user';
     if (role && req.user && req.user.role === 'admin') {
       userRole = role;
