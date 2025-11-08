@@ -1,6 +1,7 @@
 import { useState } from "react";
 import UserList from "./UserList";
 import AddUser from "./AddUser";
+import "./styles.css";
 
 export default function App() {
   const [refresh, setRefresh] = useState(0);
