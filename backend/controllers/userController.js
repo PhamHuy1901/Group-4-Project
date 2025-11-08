@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 // GET all
 exports.getUsers = async (_req, res) => {
@@ -8,10 +9,20 @@ exports.getUsers = async (_req, res) => {
 
 // POST create
 exports.createUser = async (req, res) => {
-  const { name, email } = req.body || {};
+  const { name, email, password } = req.body || {};
   if (!name?.trim() || !email?.trim())
     return res.status(400).json({ error: 'name & email required' });
-  const u = await User.create({ name: name.trim(), email: email.trim() });
+  if (!password || password.length < 6)
+    return res.status(400).json({ error: 'password must be at least 6 characters' });
+  
+  // Hash password
+  const passwordHash = await bcrypt.hash(password, 10);
+  
+  const u = await User.create({ 
+    name: name.trim(), 
+    email: email.trim(),
+    passwordHash 
+  });
   res.status(201).json(u);
 };
 
