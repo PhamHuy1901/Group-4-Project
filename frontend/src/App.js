@@ -16,19 +16,30 @@ export default function App() {
   useEffect(() => {
     const t = getAuthToken();
     const u = getAuthUser();
-    if (u) setUser(u);
-    if (t) setView("app");
+    if (u) {
+      setUser(u);
+      // set initial view depending on role
+      setView(u.role === 'admin' ? 'admin' : 'profile');
+    } else if (t) {
+      // token exists but no stored user: default to login view (user must login or we can fetch profile)
+      setView('login');
+    }
   }, []);
 
   const handleLogin = (u) => {
     setUser(u || null);
-    setView("app");
+    if (u?.role === 'admin') setView('admin');
+    else setView('profile');
   };
 
   const handleRegister = (u) => {
-    // some backends return user/token on register; treat similarly to login
+    // if backend returns user, set and direct to appropriate view; otherwise go to login
     setUser(u || null);
-    setView("login");
+    if (u) {
+      if (u.role === 'admin') setView('admin'); else setView('profile');
+    } else {
+      setView('login');
+    }
   };
 
   const handleLogout = () => {
@@ -71,7 +82,9 @@ export default function App() {
             <strong>Welcome{user?.name ? `, ${user.name}` : ''}</strong>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-outline" onClick={() => setView('app')}>Back</button>
+            {user?.role === 'admin' && (
+              <button className="btn btn-outline" onClick={() => setView('admin')}>Back</button>
+            )}
             <button className="btn btn-outline" onClick={handleLogout}>Logout</button>
           </div>
         </div>
