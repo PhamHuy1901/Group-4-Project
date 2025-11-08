@@ -6,6 +6,8 @@ import Register from "./Register";
 import Profile from "./Profile";
 import { getAuthToken, getAuthUser, clearAuthToken, clearAuthUser } from "./api";
 import "./styles.css";
+import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 
 export default function App() {
   const [refresh, setRefresh] = useState(0);
@@ -13,6 +15,14 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // If the user opened a direct link like /reset-password?token=..., show reset view
+    try {
+      const path = window.location && window.location.pathname;
+      if (path && path.toLowerCase().includes('/reset-password')) {
+        setView('reset');
+        return; // skip other init logic
+      }
+    } catch (_) {}
     const t = getAuthToken();
     const u = getAuthUser();
     if (u) {
@@ -55,7 +65,7 @@ export default function App() {
           <button className="btn btn-outline" onClick={() => setView('login')}>Login</button>
           <button className="btn btn-outline" onClick={() => setView('register')}>Register</button>
         </div>
-        <Login onLogin={handleLogin} />
+        <Login onLogin={handleLogin} onForgot={() => setView('forgot')} />
       </div>
     );
   }
@@ -88,6 +98,25 @@ export default function App() {
           </div>
         </div>
         <Profile onUpdated={(u) => setUser(u)} />
+      </div>
+    );
+  }
+  if (view === 'forgot') {
+    return (
+      <div style={{ padding: 16 }}>
+        <div style={{display:'flex', gap:8, marginBottom:8}}>
+          <button className="btn btn-outline" onClick={() => setView('login')}>Login</button>
+          <button className="btn btn-outline" onClick={() => setView('register')}>Register</button>
+        </div>
+        <ForgotPassword onSent={() => setView('login')} />
+      </div>
+    );
+  }
+
+  if (view === 'reset') {
+    return (
+      <div style={{ padding: 16 }}>
+        <ResetPassword onDone={() => setView('login')} />
       </div>
     );
   }

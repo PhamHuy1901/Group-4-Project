@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { api, setAuthToken, setAuthUser } from "./api";
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, onForgot }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,8 +40,9 @@ export default function Login({ onLogin }) {
             <div className="input"><input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} /></div>
             <div className="input"><input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} /></div>
             {err && <div className="error">{err}</div>}
-            <div style={{display:'flex', gap:8, marginTop:8}}>
+            <div style={{display:'flex', gap:8, marginTop:8, alignItems:'center'}}>
               <button className="btn btn-edit" type="submit" disabled={loading}>{loading ? 'Logging...' : 'Login'}</button>
+              <button type="button" className="forgot-link" onClick={onForgot} style={{marginLeft:8}}>Forgot password?</button>
             </div>
           </form>
         </div>
