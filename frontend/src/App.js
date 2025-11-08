@@ -4,7 +4,6 @@ import AddUser from "./AddUser";
 import Login from "./Login";
 import Register from "./Register";
 import Profile from "./Profile";
-import Admin from "./Admin";
 import { getAuthToken, getAuthUser, clearAuthToken, clearAuthUser } from "./api";
 import "./styles.css";
 
@@ -92,22 +91,6 @@ export default function App() {
       </div>
     );
   }
-  if (view === 'admin') {
-    return (
-      <div style={{ padding: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <strong>Welcome{user?.name ? `, ${user.name}` : ''}</strong>
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-outline" onClick={() => setView('app')}>Back</button>
-            <button className="btn btn-outline" onClick={handleLogout}>Logout</button>
-          </div>
-        </div>
-        <Admin />
-      </div>
-    );
-  }
 
   return (
     <div style={{ padding: 16 }}>
@@ -117,7 +100,6 @@ export default function App() {
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-outline" onClick={() => setView('profile')}>Profile</button>
-          {user?.role === 'admin' && <button className="btn btn-outline" onClick={() => setView('admin')}>Admin</button>}
           <button className="btn btn-outline" onClick={handleLogout}>Logout</button>
         </div>
       </div>
