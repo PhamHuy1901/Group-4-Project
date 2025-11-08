@@ -6,6 +6,7 @@ export const api = axios.create({
 
 // Simple auth token helpers that use localStorage so token persists across reloads
 const TOKEN_KEY = "auth_token";
+const USER_KEY = "auth_user";
 
 export function setAuthToken(token) {
   if (token) {
@@ -30,3 +31,17 @@ if (existing) {
 export function clearAuthToken() {
   setAuthToken(null);
 }
+
+export function setAuthUser(user) {
+  if (user) {
+    try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch(_) {}
+  } else {
+    localStorage.removeItem(USER_KEY);
+  }
+}
+
+export function getAuthUser() {
+  try { const v = localStorage.getItem(USER_KEY); return v ? JSON.parse(v) : null; } catch(_) { return null; }
+}
+
+export function clearAuthUser() { setAuthUser(null); }

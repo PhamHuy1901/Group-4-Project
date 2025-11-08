@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api, setAuthToken } from "./api";
+import { api, setAuthToken, setAuthUser } from "./api";
 
 export default function Register({ onRegister }) {
   const [name, setName] = useState("");
@@ -23,9 +23,11 @@ export default function Register({ onRegister }) {
       setLoading(true);
       const { data } = await api.post("/auth/signup", { name: name.trim(), email: email.trim().toLowerCase(), password });
       // Some backends don't return token on signup; if they do, store it. Otherwise caller can redirect to login.
-      const token = data?.token;
-      if (token) setAuthToken(token);
-      onRegister?.(data?.user ?? null);
+  const token = data?.token;
+  const user = data?.user ?? null;
+  if (token) setAuthToken(token);
+  if (user) setAuthUser(user);
+  onRegister?.(user);
     } catch (e) {
       setErr(e?.response?.data?.error || e.message || "Register failed");
     } finally {

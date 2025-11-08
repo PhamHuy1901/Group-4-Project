@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api, setAuthToken } from "./api";
+import { api, setAuthToken, setAuthUser } from "./api";
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -18,10 +18,12 @@ export default function Login({ onLogin }) {
       setLoading(true);
       const { data } = await api.post("/auth/login", { email: email.trim().toLowerCase(), password });
       const token = data?.token;
+      const user = data?.user ?? null;
       if (token) {
         setAuthToken(token);
       }
-      onLogin?.(data?.user ?? null);
+      if (user) setAuthUser(user);
+      onLogin?.(user);
     } catch (e) {
       setErr(e?.response?.data?.error || e.message || "Login failed");
     } finally {
