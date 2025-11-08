@@ -1,10 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { authenticate, requireAdmin, requireAdminOrOwner, optionalAuth } = require('../middleware/auth');
 
-router.get('/', userController.getUsers);
-router.post('/', userController.createUser);
-router.put('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+// GET /users - Chỉ Admin mới xem được danh sách tất cả users
+router.get('/', authenticate, requireAdmin, userController.getUsers);
+
+// POST /users - Tạo user mới (public, nhưng chỉ admin mới set được role)
+router.post('/', optionalAuth, userController.createUser);
+
+// PUT /users/:id - Admin hoặc chính user đó mới update được
+router.put('/:id', authenticate, requireAdminOrOwner, userController.updateUser);
+
+// DELETE /users/:id - Admin hoặc chính user đó mới xóa được
+router.delete('/:id', authenticate, requireAdminOrOwner, userController.deleteUser);
 
 module.exports = router;
