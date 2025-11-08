@@ -17,6 +17,8 @@ app.use((req,res,next)=>{ console.log(req.method, req.url); next(); });
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/user'));
 app.use('/profile', require('./routes/profile'));
+app.use('/password', require('./routes/password'));
+app.use('/upload', require('./routes/upload'));
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log('Server running on', PORT));

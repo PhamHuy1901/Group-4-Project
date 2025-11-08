@@ -34,11 +34,16 @@ export function clearAuthToken() {
 
 export function setAuthUser(user) {
   if (user) {
-    try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch(_) {}
-    // set x-user-id header for backend that expects it (dev/testing)
-    try { if (user._id) api.defaults.headers.common['x-user-id'] = user._id; } catch(_) {}
+    try { 
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      // Set x-user-id header for RBAC authentication
+      if (user._id) {
+        api.defaults.headers.common["x-user-id"] = user._id;
+      }
+    } catch(_) {}
   } else {
     localStorage.removeItem(USER_KEY);
+    delete api.defaults.headers.common["x-user-id"];
   }
 }
 
@@ -48,8 +53,8 @@ export function getAuthUser() {
 
 export function clearAuthUser() { setAuthUser(null); }
 
-// initialize stored user header on load
-const _existingUser = getAuthUser();
-if (_existingUser && _existingUser._id) {
-  try { api.defaults.headers.common['x-user-id'] = _existingUser._id; } catch(_) {}
+// Initialize x-user-id header from storage on load
+const existingUser = getAuthUser();
+if (existingUser && existingUser._id) {
+  api.defaults.headers.common["x-user-id"] = existingUser._id;
 }
