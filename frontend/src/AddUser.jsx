@@ -29,13 +29,32 @@ export default function AddUser({ onAdded }) {
     }
   };
 
+  const handleClear = () => { setName(""); setEmail(""); setErr(""); };
+
   return (
-    <form onSubmit={handleSubmit} style={{display:"grid", gap:8}}>
-      <h2>Add User</h2>
-      <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
-      <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
-      {err && <small style={{color:"red"}}>{err}</small>}
-      <button type="submit" disabled={submitting}>{submitting ? "Adding..." : "Add"}</button>
-    </form>
+    <div className="container">
+      <div className="card">
+        <div className="header">
+          <h2>Add User</h2>
+        </div>
+        <div className="content">
+          <form className="form add-form" onSubmit={handleSubmit}>
+            <div className="input">
+              <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
+            </div>
+            <div className="input">
+              <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+            </div>
+
+            {err && <div className="error">{err}</div>}
+
+            <div style={{display:'flex', gap:8, marginTop:8}}>
+              <button className="btn btn-edit" type="submit" disabled={submitting}>{submitting ? "Adding..." : "Add"}</button>
+              <button type="button" className="btn btn-outline" onClick={handleClear} disabled={submitting}>Clear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }
