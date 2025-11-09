@@ -1,11 +1,57 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 /**
- * Middleware giả lập xác thực user
- * Trong production thực tế, bạn nên dùng JWT token
- * Hiện tại chỉ lấy userId và role từ header để test
+ * Middleware xác thực JWT Access Token
+ * Kiểm tra token từ header Authorization: Bearer <token>
  */
 exports.authenticate = async (req, res, next) => {
+  try {
+    // Lấy token từ header Authorization
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.startsWith('Bearer ') 
+      ? authHeader.substring(7) 
+      : null;
+    
+    if (!token) {
+      return res.status(401).json({ error: 'Access token required' });
+    }
+
+    // Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    if (!decoded.sub) {
+      return res.status(401).json({ error: 'Invalid token payload' });
+    }
+
+    // Tìm user trong database
+    const user = await User.findById(decoded.sub).select('-passwordHash -refreshTokens');
+    
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    // Gắn user và decoded token vào request
+    req.user = user;
+    req.tokenPayload = decoded;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Access token expired', code: 'TOKEN_EXPIRED' });
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid access token' });
+    }
+    console.error('Authentication error:', error);
+    res.status(401).json({ error: 'Authentication failed' });
+  }
+};
+
+/**
+ * Middleware xác thực dành cho development/testing
+ * Giữ lại để backward compatibility với code cũ
+ */
+exports.authenticateLegacy = async (req, res, next) => {
   try {
     // Lấy userId từ header (giả lập authentication)
     const userId = req.headers['x-user-id'];
