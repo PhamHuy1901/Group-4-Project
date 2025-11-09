@@ -9,6 +9,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://group-4-project-beige.vercel.app',
+  'https://group-4-project-lime.vercel.app',
   process.env.FRONTEND_URL || 'http://localhost:3000'
 ];
 
