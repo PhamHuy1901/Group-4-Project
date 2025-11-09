@@ -5,26 +5,12 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS configuration for production and development
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://group-4-project-beige.vercel.app',
-  process.env.FRONTEND_URL || 'http://localhost:3000'
-];
-
-app.use(cors({ 
-  origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      // Log rejected origin for debugging
-      console.log('❌ CORS blocked origin:', origin);
-      callback(null, true); // Allow anyway in production for now
-    }
-  },
-  credentials: true
+// CORS configuration - Allow all origins for now
+app.use(cors({
+  origin: true, // Allow all origins
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
 }));
 
 app.use(express.json());
