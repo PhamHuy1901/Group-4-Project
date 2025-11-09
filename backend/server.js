@@ -30,9 +30,15 @@ app.use(cors({
 app.use(express.json());
 
 mongoose.set('strictQuery', true);
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => { console.error('Mongo connect error:', err.message); process.exit(1); });
+// Support both MONGODB_URI (Railway) and MONGO_URI (legacy)
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (!mongoUri) {
+  console.error('❌ MONGODB_URI or MONGO_URI is not defined');
+  process.exit(1);
+}
+mongoose.connect(mongoUri)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => { console.error('❌ Mongo connect error:', err.message); process.exit(1); });
 
 app.use((req,res,next)=>{ console.log(req.method, req.url); next(); });
 

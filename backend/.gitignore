@@ -10,6 +10,8 @@ node_modules/
 logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS files
 .DS_Store
@@ -20,3 +22,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Note: package-lock.json should be committed for Railway deployment
+# Do NOT ignore package-lock.json
