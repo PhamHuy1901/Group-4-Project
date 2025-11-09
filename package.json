@@ -1,4 +1,20 @@
 {
+  "name": "group-4-project-monorepo",
+  "version": "1.0.0",
+  "description": "Group 4 Project - Backend API",
+  "main": "backend/server.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm install",
+    "postinstall": "cd backend && npm install"
+  },
+  "keywords": ["backend", "api", "nodejs", "express"],
+  "author": "Group 4",
+  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
