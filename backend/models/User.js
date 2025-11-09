@@ -7,12 +7,7 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ['user','admin'], default: 'user' }, // để sau dùng RBAC
   avatar: { type: String }, // URL của avatar (Cloudinary)
   resetPasswordToken: { type: String }, // Token để reset password
-  resetPasswordExpires: { type: Date }, // Thời gian hết hạn của token
-  refreshTokens: [{ // Lưu danh sách Refresh Tokens (support multiple devices)
-    token: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    expiresAt: { type: Date, required: true }
-  }]
+  resetPasswordExpires: { type: Date } // Thời gian hết hạn của token
 }, { timestamps: true });
 
 // Tạo index unique cho email

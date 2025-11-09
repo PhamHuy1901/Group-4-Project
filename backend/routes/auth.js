@@ -5,6 +5,5 @@ const authController = require('../controllers/authController');
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
-router.post('/refresh', authController.refresh); // Làm mới Access Token
 
 module.exports = router;
