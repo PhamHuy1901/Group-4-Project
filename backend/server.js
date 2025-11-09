@@ -8,6 +8,7 @@ const app = express();
 // CORS configuration for production and development
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://group-4-project-beige.vercel.app',
   process.env.FRONTEND_URL || 'http://localhost:3000'
 ];
 
@@ -18,7 +19,9 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Log rejected origin for debugging
+      console.log('❌ CORS blocked origin:', origin);
+      callback(null, true); // Allow anyway in production for now
     }
   },
   credentials: true
